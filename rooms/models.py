@@ -34,6 +34,12 @@ class Room(CommonModel):
     
     amenities = models.ManyToManyField("rooms.Amenity")
     
+    category = models.ForeignKey(
+        "categories.Category", 
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL)
+    
     def __str__(self) -> str:
         return self.name
     
@@ -50,4 +56,4 @@ class Amenity(CommonModel):
         return self.name
     
     class Meta:
-        verbose_name_plural = "Amenities"
+        verbose_name_plural = "Amenities" # 복수형 올바르게 표시되도록 수정
