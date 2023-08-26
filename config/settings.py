@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'reviews.apps.ReviewsConfig',
     'wishlists.apps.WishlistsConfig',
+    'bookings.apps.BookingsConfig',
+    'medias.apps.MediasConfig',
+    'direct_messages.apps.DirectMessagesConfig',
 ]
 
 MIDDLEWARE = [
