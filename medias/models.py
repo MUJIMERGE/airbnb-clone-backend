@@ -29,7 +29,7 @@ class Video(CommonModel):
     
     file = models.FileField()
     
-    expeience = models.OneToOneField(
+    experience = models.OneToOneField(
         "experiences.Experience", 
         on_delete=models.CASCADE
     )
