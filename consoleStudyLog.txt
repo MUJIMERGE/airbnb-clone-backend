@@ -132,3 +132,52 @@ price 가 15보다 큰 값들을 가져옴
 
 
 방금 생성한 어메니티를 삭제함
+
+------------------------------------------------------------------------
+
+
+8월 28일 학습 내용 정리
+
+------------------------------------------------------------------------
+
+QuerySet 연산자를 함께 묶어줌
+
+>>> Room.objects.filter(pet_friendly=True)
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+>>> Room.objects.filter(pet_friendly=True).exclude(price__lt=15)
+<QuerySet [<Room: Beautiful House in 의정부>]>
+>>> Room.objects.filter(pet_friendly=True).exclude(price__lt=15).filter(name__contains="의정부")
+<QuerySet [<Room: Beautiful House in 의정부>]>
+>>> Room.objects.filter(pet_friendly=True, name__contains="서울")
+<QuerySet [<Room: Apt. in 서울>]>
+>>> Room.objects.filter(pet_friendly=True, name__contains="서울", price__gt=15)
+
+
+QuerySet 으로 묶여있기 때문에 chaining 가능
+
+QuerySet 은 lazy 함
+-> 구체적으로 요청받았을 때에만 데이터를 줌
+ex)
+>>> Room.objects.all()
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+
+위의 코드는 DB 에서 목록만을 가져옴
+
+>>> for room in Room.objects.all():
+...     print(room.name)
+...
+Beautiful House in 의정부
+Apt. in 서울
+
+위의 코드는 가져온 목록에서 이름을 하나씩 가져옴
+
+
+>>> Room.objects.filter(pet_friendly=True).count()
+2
+
+------------------------------------------------------------------------
+
+lookup 함수
+ex) filter(name__contains="의정부") -> 이름에 의정부를 포함하는 데이터만 가져옴
+
+------------------------------------------------------------------------
