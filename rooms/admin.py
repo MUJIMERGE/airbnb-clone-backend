@@ -8,6 +8,7 @@ class RoomAdmin(admin.ModelAdmin):
         "price",
         "kind",
         "total_amenities",
+        "rating",
         "owner",
         "created_at",
     )
@@ -20,9 +21,14 @@ class RoomAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    search_fields = (
+        # "=name",  # 입력한 문자와 같은 이름을 가지는 room 만 검색
+        # "^price", # 입력한 숫자로 시작하는 가격만 검색함
+        "owner__username", # 입력한 문자를 포함하는 사용자의 room 을 검색
+    )
     
-    def total_amenities(self, room):
-        return room.amenities.count()
+    # def total_amenities(self, room):
+    #     return room.amenities.count()
 
 @admin.register(Amenity)
 class AmenityAdmin(admin.ModelAdmin):
