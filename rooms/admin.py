@@ -1,6 +1,12 @@
 from django.contrib import admin
 from .models import Room, Amenity
 
+@admin.action(description="Set all prices to zero")
+def reset_prices(model_admin, request, rooms):
+    for room in rooms.all():
+        room.price = 0
+        room.save()
+
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = (
@@ -26,6 +32,7 @@ class RoomAdmin(admin.ModelAdmin):
         # "^price", # 입력한 숫자로 시작하는 가격만 검색함
         "owner__username", # 입력한 문자를 포함하는 사용자의 room 을 검색
     )
+    actions = (reset_prices,)
     
     # def total_amenities(self, room):
     #     return room.amenities.count()
