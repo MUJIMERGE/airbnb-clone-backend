@@ -61,11 +61,12 @@ class Room(CommonModel):
             return "No Reviews"
         else:
             total_rating = 0
+            
             # for review in room.reviews.all():
             #     total_rating += review.rating
             
             # 위의 방식은 review 의 모든 것을 가져오기에 비효율적임!
-            # QuerySet 은 lazt 하기 때문에 아래와 같이 수정
+            # QuerySet 은 lazy 하기 때문에 아래와 같이 수정
             
             for review in room.reviews.all().values("rating"):
                 total_rating += review['rating']

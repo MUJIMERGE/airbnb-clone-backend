@@ -194,3 +194,74 @@ DateField 에서 year 를 통해 연 접근, exists() 를 통해 T/F 반환 등
 공식 도큐먼트에 여러가지 설명되어있음
 
 ------------------------------------------------------------------------
+
+8월 30일 학습 내용 정리
+
+------------------------------------------------------------------------
+
+room 에 ForeignKey 로 user 를 준 상황에서 room 을 통해 user 에 접근하는 것은 기본
+이런 상황을 room 이 user 를 가리키고 있다고 함.
+그런데 여기에서 user 를 가리키고 있는 model 을 파악할 수 있음
+
+1. ForeignKey Filter
+
+>>> Room.objects.filter(owner__username='muji')
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+>>> Room.objects.filter(owner__username__startswith='m')
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+
+-> 필터링을 해야하기 때문에 그닥 좋은 방법은 아님
+poe
+
+2. Reverse Accessors
+
+>>> from users.models import User
+>>> me = User.objects.get(pk=1)
+>>> me.room_set
+<django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x7f922f7cb670>
+>>> me.room_set.all()
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+
+-> 모델명_set 을 통해 접근 가능(dir(me) 함수를 호출해서 확인 가능)
+
+
+>>> from categories.models import Category
+>>> category = Category.objects.get(pk=2)
+>>> category
+<Category: Experiences: Food and Drink>
+>>> category.room_set.all()
+<QuerySet []>
+>>> category.experience_set.all()
+<QuerySet [<Experience: Beautiful View!>]>
+
+------------------------------------------------------------------------
+
+Reverse Accessors custom
+
+Room 모델에 가서 아래와 같이 수정
+
+    owner = models.ForeignKey(
+        "users.User", 
+        on_delete=models.CASCADE,
+        related_name="rooms"
+    )
+    
+    amenities = models.ManyToManyField(
+        "rooms.Amenity",
+        related_name="rooms"
+    )
+    
+    category = models.ForeignKey(
+        "categories.Category", 
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rooms"
+    )
+
+>>> from users.models import User
+>>> me = User.objects.get(pk=1)
+>>> me.rooms.all()
+<QuerySet [<Room: Beautiful House in 의정부>, <Room: Apt. in 서울>]>
+
+-> related_name 으로 설정한 이름으로 접근 가능
